@@ -44,7 +44,7 @@ class App extends Component {
       })
 
 			// Check if the user is the owner
-      const owner = await instance.methods.owner().call()
+      const owner = await instance.methods.owner().call() //interface.methods.voter.call(from : [0]) ou instance 
       if (account === owner) {
         this.setState({
           isOwner: true,

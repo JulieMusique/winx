@@ -16,9 +16,11 @@ import Toolbar from '@mui/material/Toolbar';
 import '../../App.css'
 import Button from '@mui/material/Button';
 import HomeIcon from '@mui/icons-material/Home';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import SettingsIcon from '@mui/icons-material/Settings';
 const drawerWidth = 240;
 const navItems = [<HomeIcon />, 'About', 'Contact'];
-
+const navLink = [[ <HomeIcon />,, 'Accueil', '/' ], [<EditNoteIcon />, 'Présentation du groupe', '/groupe'], [<SettingsIcon />, 'Présentation du site', '/projet']];
 function DrawerAppBar(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -29,7 +31,7 @@ function DrawerAppBar(props) {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <img src="./static/images/winx_logo.png" alt="logo" />
+      <img className="logo" src="./static/images/winx_logo.png" alt="logo" />
       <Divider />
       <List>
         {navItems.map((item) => (
@@ -48,22 +50,22 @@ function DrawerAppBar(props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar className='appBar' component="nav">
+      <AppBar className='appBar' component="nav" style={{backgroundColor: '#fff', color: '#000'}}>
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2, display: { sm: 'none' }, color: '#000' }}
           >
             <MenuIcon />
           </IconButton>
-            <img src="./static/images/winx_logo.png" alt="logo" />
+            <img className="logo" src="./static/images/winx_logo.png" alt="logo" />
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
-                {item}
+            {navLink.map((items) => (
+              <Button key={items[0]} href={items[2]} sx={{ color: '#000' }}>
+                {items[0]}{items[1]}
               </Button>
             ))}
           </Box>
@@ -86,9 +88,6 @@ function DrawerAppBar(props) {
           {drawer}
         </Drawer>
       </Box>
-      <Box component="main" sx={{ p: 5 }}>
-        <Toolbar />
-      </Box>
     </Box>
   );
 }
@@ -97,6 +96,9 @@ DrawerAppBar.propTypes = {
   /**
    * Injected by the documentation to work in an iframe.
    * You won't need it on your project.
+   * <<Box component="main" sx={{ p: 5 }}>
+        <Toolbar />
+      </Box>>
    */
   window: PropTypes.func,
 };

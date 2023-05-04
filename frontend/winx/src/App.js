@@ -7,7 +7,7 @@ function App() {
       <div className="affiche">
         <img className="affiche-img" src="./static/images/images.jpg" alt="img"/>
         <h1>Bienvenue !</h1>
-        <button type="submit">Connecter</button>
+        <a href="voter"><button type="submit">Connecter</button></a>
       </div>
     </div>
   );

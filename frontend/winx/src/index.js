@@ -2,15 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import App from './App';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import DrawerAppBar from './Components/NavBar';
+import App from './App';
+import Home from './Components/Home/index';
+import Groupe from './Components/Home/groupe';
+import Projet from './Components/Home/projet';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <DrawerAppBar />
-    <App />
+    <Router>
+      <DrawerAppBar />
+      <Routes>
+        <Route path='/' exact element={<App />}></Route>
+        <Route path='/voter' exact element={<Home />}></Route>
+        <Route path='/groupe' exact element={<Groupe />}></Route>
+        <Route path='/projet' exact element={<Projet />}></Route>
+      </Routes>
+    </Router>
   </React.StrictMode>
 );
 
