@@ -1,4 +1,7 @@
-pragma solidity ^0.8.18;
+
+
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.5.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -35,6 +38,26 @@ contract Voting is Ownable{
     event ProposalRegistered(uint proposalId);
     event Voted (address voter, uint proposalId);
 
+    function getProposals() public view returns (Proposal[] memory) {
+        return proposals;
+    }
+
+    function getStatus() public view returns(string memory){
+        if(workflowStatus == WorkflowStatus.RegisteringVoters){
+            return "RegisteringVoters";
+        } else if(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted){
+            return "ProposalsRegistrationStarted";
+        } else if(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded){
+            return "ProposalsRegistrationEnded";
+        } else if(workflowStatus == WorkflowStatus.VotingSessionStarted){
+            return "VotingSessionStarted";
+        } else if(workflowStatus == WorkflowStatus.VotingSessionEnded){
+            return "VotingSessionEnded";
+        } else if(workflowStatus == WorkflowStatus.VotesTallied){
+            return "VotesTallied";
+        }
+    }
+
     function registerVoter(address _voterAddress) public onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "L'enregistrement n'est pas autorise pour le moment");
         require(!voters[_voterAddress].isRegistered, "Le votant est deja inscrit");
@@ -44,10 +67,13 @@ contract Voting is Ownable{
     }
 
     function startProposalsRegistration() public onlyOwner {
-        require(workflowStatus == WorkflowStatus.RegisteringVoters, "L'enregistrement des propositions ne peut pas commencer pour le moment");
+        if(workflowStatus != WorkflowStatus.ProposalsRegistrationStarted){
+            require(workflowStatus == WorkflowStatus.RegisteringVoters || workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "L'enregistrement des propositions ne peut pas commencer pour le moment");
 
-        workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
-        emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, workflowStatus);
+            workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
+            emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, workflowStatus);
+        }
+        
     }
 
     function registerProposal(string memory _description) public {

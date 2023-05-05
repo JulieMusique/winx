@@ -19,7 +19,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsIcon from '@mui/icons-material/Settings';
 const drawerWidth = 240;
-const navItems = [<HomeIcon />, 'About', 'Contact'];
 const navLink = [[ <HomeIcon />, 'Accueil', '/' ], [<EditNoteIcon />, 'Présentation du groupe', '/groupe'], [<SettingsIcon />, 'Présentation du site', '/projet']];
 function DrawerAppBar(props) {
   const { window } = props;
@@ -34,9 +33,9 @@ function DrawerAppBar(props) {
       <img className="logo" src="./static/images/winx_logo.png" alt="logo" />
       <Divider />
       <List>
-        {navLink.map((items) => (
-          <ListItem key={items[1]} href={items[2]} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
+        {navLink.map((items, index) => (
+          <ListItem disablePadding key={index}>
+            <ListItemButton component="a"  href={items[2]} sx={{ textAlign: 'center' }}>
               <ListItemText primary={items[0]} secondary={items[1]}/>
             </ListItemButton>
           </ListItem>
@@ -63,8 +62,8 @@ function DrawerAppBar(props) {
           </IconButton>
             <img className="logo" src="./static/images/winx_logo.png" alt="logo" />
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navLink.map((items) => (
-              <Button key={items[0]} href={items[2]} sx={{ color: '#000' }}>
+            {navLink.map((items, index) => (
+              <Button key={index} href={items[2]} sx={{ color: '#000' }}>
                 {items[0]}{items[1]}
               </Button>
             ))}

@@ -1,0 +1,22 @@
+.App {
+  text-align: center;
+  background-color: #f8dbf6;
+  margin : 0;
+  padding: 0;
+}
+
+.appBar{
+  background-color: '#d42148';
+}
+
+nav{
+  color : "#d42148";
+}
+
+img{
+  width : 10%;
+}
+
+.affiche{
+  width : 100%;
+}

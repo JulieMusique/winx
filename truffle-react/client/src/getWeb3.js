@@ -5,8 +5,11 @@ const getWeb3 = () =>
     // Wait for loading completion to avoid race conditions with web3 injection timing.
     window.addEventListener("load", async () => {
       // Modern dapp browsers...
+      let web3;
       if (window.ethereum) {
-        const web3 = new Web3(window.ethereum);
+        web3 = new Web3(window.ethereum);
+        // Request account access if needed
+        window.ethereum.request({ method: 'eth_requestAccounts' })
         try {
           // Request account access if needed
           await window.ethereum.enable();
@@ -19,7 +22,7 @@ const getWeb3 = () =>
       // Legacy dapp browsers...
       else if (window.web3) {
         // Use Mist/MetaMask's provider.
-        const web3 = window.web3;
+        web3 = new Web3(window.web3.currentProvider)
         console.log("Injected web3 detected.");
         resolve(web3);
       }

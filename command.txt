@@ -1,0 +1,6 @@
+Pour lancer mon app il faut que tu télécharges les choses suivante :
+npm install @mui/material @emotion/react @emotion/styled
+npm i react-router-dom
+npm i react-icons // je pense que tu n'es pas obligé de l'installer
+npm install @mui/icons-material
+npm install @mui/material @mui/styled-engine-sc styled-components

@@ -2,6 +2,9 @@
 import React, { Component } from "react"
 import Voting from "./contracts/Voting.json"
 import getWeb3 from "./getWeb3"
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import './App.css'
 
 class App extends Component {
   state = {
@@ -10,6 +13,9 @@ class App extends Component {
     contract: null,
     userAddress: null,
     isOwner: false,
+    proposals: null,
+    description : null,
+    winningProposal: null
   }
 
   // componentDidMount : méthode qui permet de lancer une fonction au moment ou app.js est instancié, si la page se lance bien elle envoie componentDidMount
@@ -37,20 +43,29 @@ class App extends Component {
       // example of interacting with the contract's methods.
       this.setState({ web3, accounts, contract: instance })
 
-      let account = this.state.accounts[0]
-
-      this.setState({
-        userAddress: account.slice(0, 6) + "..." + account.slice(38, 42),
-      })
-
-			// Check if the user is the owner
-      const owner = await instance.methods.owner().call() //interface.methods.voter.call(from : [0]) ou instance 
-      if (account === owner) {
+      if (accounts && accounts.length > 0) {
+        let account = accounts[0]
         this.setState({
-          isOwner: true,
+          userAddress: account.slice(0, 6) + "..." + account.slice(38, 42),
         })
+        // Check if the user is the owner
+        console.log(instance);
+        const owner = await instance.methods.owner().call()
+        if (account === owner) {
+          this.setState({
+            isOwner: true,
+          })
+          const status = await instance.methods.getStatus().call()
+          console.log(status)
+          const response = await instance.methods.startProposalsRegistration().send({ from: account, gas:"5000000"})
+          console.log(response)
+        }
+        const proposal = await instance.methods.getProposals().call()
+        this.setState({proposals: proposal})
+        console.log(proposal)
+      } else {
+        console.error("No accounts found")
       }
-
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -59,6 +74,61 @@ class App extends Component {
       console.error(error)
     }
   }
+
+  runProposals = async () => {
+    // Get the value from the contract to prove it worked.
+    const response = await this.state.contract.methods.getProposals().call();
+    console.log(response)
+    // Update state with the result.
+    this.setState({proposals: response})
+  };
+
+  handleSubmit = async() => {
+    //alert("owner addr",this.state.isOwner)
+    console.log("owner addr",this.state.isOwner)
+    //await this.state.contract.methods.startProposalsRegistration().call({ from: this.state.accounts[0] })
+    console.log(this.state.description)
+    await this.state.contract.methods.registerProposal(this.state.description).send({from : this.state.accounts[0], gas:"5000000"})
+    await this.runProposals()
+    console.log(this.state.proposals)
+  }
+
+  handleStartProposal = async() => {
+    const response = await this.state.contract.methods.startProposalsRegistration().send({ from: this.state.accounts[0], gas:"5000000"})
+    console.log(response)
+    const status = await this.state.contract.methods.getStatus().call()
+    console.log(status)
+  }
+
+  handleEndProposal = async() => {
+    const response = await this.state.contract.methods.endProposalsRegistration().send({ from: this.state.accounts[0], gas:"5000000"})
+    console.log(response)
+    const status = await this.state.contract.methods.getStatus().call()
+    console.log(status)
+  }
+
+  handleStartVotingSession = async() => {
+    const response = await this.state.contract.methods.startVotingSession().send({ from: this.state.accounts[0], gas:"5000000"})
+    console.log(response)
+    const status = await this.state.contract.methods.getStatus().call()
+    console.log(status)
+  }
+
+  handleEndVotingSession = async() => {
+    const response = await this.state.contract.methods.endVotingSession().send({ from: this.state.accounts[0], gas:"5000000"})
+    console.log(response)
+    const status = await this.state.contract.methods.getStatus().call()
+    console.log(status)
+  }
+
+  handletallyVote = async() => {
+    const responseid = await this.state.contract.methods.tallyVotes().send({ from: this.state.accounts[0], gas:"5000000"})
+    this.setState({winningProposal: await this.state.contract.methods.getProposals()[responseid]})
+    console.log(this.state.winningProposal)
+    const status = await this.state.contract.methods.getStatus().call()
+    console.log(status)
+  }
+
 render() {
 return (
       <div className="App">
@@ -141,6 +211,34 @@ return (
               </nav>
             </header>
             </div>
+            </div>
+            <div className="affiche">
+              <img className="affiche-img" src="./static/images/images.jpg" alt="img"/>
+              <h1>Bienvenue !</h1>
+              <p>{this.state.proposals.map((items, index) => (
+                <Button key={index} href={items[2]} sx={{ color: '#000' }}>
+                  {items[0]}{items[1]}
+                </Button>
+              ))}</p>
+              <TextField id="outlined-bare" placeholder="Description du proposal" margin="normal" onChange={ (e) => this.setState({description: e.target.value}) } variant="outlined" inputProps={{ 'aria-label': 'bare' }} />
+              <Button onClick={this.handleSubmit} variant="contained">
+                  Submit
+              </Button>
+              <Button onClick={this.handleStartProposal} variant="contained">
+                  Start Proposal
+              </Button>
+              <Button onClick={this.handleEndProposal} variant="contained">
+                  End proposal
+              </Button>
+              <Button onClick={this.handleStartVotingSession} variant="contained">
+                  start voting session
+              </Button>
+              <Button onClick={this.handleEndVotingSession} variant="contained">
+                  End voting session
+              </Button>
+              <Button onClick={this.handletallyVote} variant="contained">
+                  Winning Proposal 
+              </Button>
             </div>
             </div>
 )

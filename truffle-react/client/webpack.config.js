@@ -34,6 +34,12 @@ module.exports = {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
+      {
+        test: /\.map$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+        loader: 'file-loader',
+      },
     ],
   },
   plugins: [
